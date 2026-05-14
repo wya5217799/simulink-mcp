@@ -1,0 +1,176 @@
+{
+  "meta": {
+    "source": "generated from mcp_server.PUBLIC_TOOLS filtered for generic simulink-toolbox use",
+    "note": "This file is the L0 authority for the generic installed skill inventory. It intentionally excludes project-specific harness, training, and VSG bridge tools. Regenerate with: python scripts/regen_skill_index.py",
+    "excluded_project_tools": [
+      "training_status",
+      "training_diagnose",
+      "training_evaluate_run",
+      "training_compare_runs",
+      "harness_scenario_status",
+      "harness_model_inspect",
+      "harness_model_patch_verify",
+      "harness_model_diagnose",
+      "harness_model_report",
+      "harness_train_smoke_minimal",
+      "harness_train_smoke_start",
+      "harness_train_smoke_poll",
+      "simulink_bridge_status"
+    ]
+  },
+  "simulink_tools": [
+    {
+      "name": "simulink_load_model",
+      "group": "construct",
+      "description": "Open an existing .slx into MATLAB"
+    },
+    {
+      "name": "simulink_create_model",
+      "group": "construct",
+      "description": "Create a new empty .slx file"
+    },
+    {
+      "name": "simulink_close_model",
+      "group": "construct",
+      "description": "Close an open model from MATLAB session"
+    },
+    {
+      "name": "simulink_loaded_models",
+      "group": "discover",
+      "description": "List models currently loaded in MATLAB session"
+    },
+    {
+      "name": "simulink_model_status",
+      "group": "discover",
+      "description": "Return loaded/dirty/runtime status for one model"
+    },
+    {
+      "name": "simulink_save_model",
+      "group": "construct",
+      "description": "Save a model, optionally to a target path"
+    },
+    {
+      "name": "simulink_get_block_tree",
+      "group": "discover",
+      "description": "Get full block hierarchy of a model"
+    },
+    {
+      "name": "simulink_describe_block_ports",
+      "group": "wire",
+      "description": "List all port names and directions for a block"
+    },
+    {
+      "name": "simulink_trace_port_connections",
+      "group": "wire",
+      "description": "Trace signal chain from a port upstream/downstream"
+    },
+    {
+      "name": "simulink_explore_block",
+      "group": "discover",
+      "description": "Deep inspect a single block (type, params, ports)"
+    },
+    {
+      "name": "simulink_query_params",
+      "group": "query",
+      "description": "Read current parameter values (read-only)"
+    },
+    {
+      "name": "simulink_set_block_params",
+      "group": "modify",
+      "description": "Set block parameter values"
+    },
+    {
+      "name": "simulink_library_lookup",
+      "group": "discover",
+      "description": "Query library block params/defaults/ports (pre-placement); NOT model-level verification"
+    },
+    {
+      "name": "simulink_add_block",
+      "group": "construct",
+      "description": "Add a single block to a model"
+    },
+    {
+      "name": "simulink_add_subsystem",
+      "group": "construct",
+      "description": "Add a subsystem container"
+    },
+    {
+      "name": "simulink_connect_ports",
+      "group": "wire",
+      "description": "Connect two block ports (1-indexed)"
+    },
+    {
+      "name": "simulink_delete_block",
+      "group": "modify",
+      "description": "Delete a block by path"
+    },
+    {
+      "name": "simulink_compile_diagnostics",
+      "group": "verify",
+      "description": "Full compile with error/warning report"
+    },
+    {
+      "name": "simulink_step_diagnostics",
+      "group": "diagnose",
+      "description": "Single-step run with per-step diagnostics"
+    },
+    {
+      "name": "simulink_solver_audit",
+      "group": "verify",
+      "description": "Check solver configuration (step size, tolerance)"
+    },
+    {
+      "name": "simulink_patch_and_verify",
+      "group": "verify",
+      "description": "Atomic: set param + immediate verify"
+    },
+    {
+      "name": "simulink_run_script",
+      "group": "execute",
+      "description": "Run MATLAB script synchronously (<=30s); no audit required — MCP escape hatch"
+    },
+    {
+      "name": "simulink_run_script_async",
+      "group": "execute",
+      "description": "Run MATLAB script asynchronously; no audit required — use poll_script for results"
+    },
+    {
+      "name": "simulink_poll_script",
+      "group": "execute",
+      "description": "Poll status of async script job"
+    },
+    {
+      "name": "simulink_screenshot",
+      "group": "capture",
+      "description": "Screenshot the Simulink canvas"
+    },
+    {
+      "name": "simulink_capture_figure",
+      "group": "capture",
+      "description": "Capture a MATLAB figure window"
+    },
+    {
+      "name": "simulink_workspace_set",
+      "group": "workspace",
+      "description": "Set MATLAB base-workspace variables in one call"
+    },
+    {
+      "name": "simulink_run_window",
+      "group": "runtime",
+      "description": "Run a model over a controlled simulation window"
+    },
+    {
+      "name": "simulink_runtime_reset",
+      "group": "runtime",
+      "description": "Reset FastRestart/runtime state without project semantics"
+    },
+    {
+      "name": "simulink_signal_snapshot",
+      "group": "signals",
+      "description": "Read logged/ToWorkspace/block-output values at one time point"
+    }
+  ],
+  "summary": {
+    "simulink_count": 30
+  }
+}

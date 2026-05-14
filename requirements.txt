@@ -1,0 +1,2 @@
+fastmcp>=2.0
+matlabengine  # install separately: pip install matlabengine==<MATLAB_YEAR><a|b>
