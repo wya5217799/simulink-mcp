@@ -79,7 +79,7 @@ Restart Claude Desktop. The server cold-starts in ~20 s on first tool call.
 
 ---
 
-## 32 MCP tools
+## 33 MCP tools
 
 ### Model lifecycle
 `simulink_load_model` · `simulink_create_model` · `simulink_close_model` · `simulink_loaded_models` · `simulink_model_status` · `simulink_save_model`
@@ -107,6 +107,9 @@ Restart Claude Desktop. The server cold-starts in ~20 s on first tool call.
 
 ### Runtime
 `simulink_workspace_set` · `simulink_run_window` · `simulink_runtime_reset` · `simulink_signal_snapshot`
+
+### Health check
+`simulink_ping`
 
 ---
 
