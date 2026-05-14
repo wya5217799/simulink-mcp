@@ -37,11 +37,19 @@ The installer:
 
 ### Install
 
+`install.ps1` handles this automatically. To install manually:
+
 ```powershell
-pip install fastmcp
-pip install matlabengine==<YEAR><a|b>   # match your MATLAB release
-# e.g. R2025b -> matlabengine==25.2
+# 1. Install the server as a global CLI command (no path dependency)
+pip install -e C:\path\to\simulink-mcp
+
+# 2. Install matlabengine — version must match your MATLAB release
+pip install matlabengine==25.2   # R2025b
+pip install matlabengine==24.2   # R2024b
 ```
+
+After `pip install -e`, the `simulink-mcp` command is available system-wide.
+You can clone the repo anywhere and move it later without breaking Claude Desktop.
 
 ### Claude Desktop config
 
@@ -51,10 +59,8 @@ Add to `%APPDATA%\Claude\claude_desktop_config.json`:
 {
   "mcpServers": {
     "simulink-tools": {
-      "command": "python",
-      "args": ["C:\\path\\to\\simulink-mcp\\server\\server.py"],
+      "command": "simulink-mcp",
       "env": {
-        "PYTHONPATH": "C:\\path\\to\\simulink-mcp",
         "SLX_WORKSPACE": "C:\\path\\to\\your\\models"
       }
     }
@@ -68,12 +74,12 @@ Restart Claude Desktop. The server cold-starts in ~20 s on first tool call.
 
 | Variable | Default | Description |
 |---|---|---|
-| `SLX_WORKSPACE` | Repo root | Directory to search for `.slx` model files |
-| `SLX_HELPERS_PATH` | `../matlab/` | Override path to the MATLAB helper scripts |
+| `SLX_WORKSPACE` | Current directory | Directory to search for `.slx` model files |
+| `SLX_HELPERS_PATH` | Bundled `matlab/` | Override path to the MATLAB helper scripts |
 
 ---
 
-## 30 MCP tools
+## 32 MCP tools
 
 ### Model lifecycle
 `simulink_load_model` · `simulink_create_model` · `simulink_close_model` · `simulink_loaded_models` · `simulink_model_status` · `simulink_save_model`

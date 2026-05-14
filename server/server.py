@@ -1,6 +1,6 @@
 """server/server.py — FastMCP entry point for the standalone simulink-mcp server.
 
-Registers 30 generic Simulink tools. Start with:
+Registers 32 generic Simulink tools. Start with:
     python -m server.server
 
 Or add to claude_desktop_config.json:
@@ -72,7 +72,7 @@ from server.simulink_tools import (
 mcp = FastMCP(
     "simulink-tools",
     instructions=(
-        "Generic Simulink MCP tools (30 total) for Claude and Codex. "
+        "Generic Simulink MCP tools (32 total) for Claude and Codex. "
         "Use simulink_library_lookup to discover block parameters before placing. "
         "Use simulink_run_script for build scripts (prefix output lines with 'RESULT: ' to surface them). "
         "Use simulink_query_params for reading params (1 or N blocks, all or selected params). "
@@ -124,5 +124,10 @@ PUBLIC_TOOLS = [
 for tool in PUBLIC_TOOLS:
     mcp.add_tool(tool)
 
-if __name__ == "__main__":
+def main() -> None:
+    """CLI entry point — called by ``simulink-mcp`` console script."""
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()

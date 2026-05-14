@@ -183,33 +183,52 @@ if (Test-Path $CODEX_CFG) {
 # ---------------------------------------------------------------------------
 # 6. MCP server config snippet
 # ---------------------------------------------------------------------------
+# 6. Install MCP server as a global CLI command
+# ---------------------------------------------------------------------------
 if (-not $SkillOnly) {
-    $serverPy = Join-Path $REPO_ROOT "server\server.py"
     Write-Host ""
     Write-Host "=== MCP Server Setup ===" -ForegroundColor Magenta
-    Write-Host "  1. Install dependencies:" -ForegroundColor White
-    Write-Host "       pip install fastmcp matlabengine" -ForegroundColor DarkGray
+
+    # Step A: pip install -e (editable install registers the simulink-mcp CLI globally)
+    Write-Step "Installing simulink-mcp as editable package (registers 'simulink-mcp' CLI)"
+    try {
+        & $pythonExe -m pip install -e $REPO_ROOT --quiet
+        Write-Ok "'simulink-mcp' command is now globally available"
+    } catch {
+        Write-Warn "pip install failed. Run manually: pip install -e `"$REPO_ROOT`""
+    }
+
+    # Step B: verify the entry point is reachable
+    $cliPath = & $pythonExe -c "import shutil; print(shutil.which('simulink-mcp') or '')" 2>$null
+    if ($cliPath) {
+        Write-Ok "CLI verified at: $cliPath"
+    } else {
+        Write-Warn "CLI not on PATH yet — you may need to add Python Scripts dir to PATH or restart terminal"
+    }
+
     Write-Host ""
-    Write-Host "  2. Add to Claude Desktop config (~\AppData\Roaming\Claude\claude_desktop_config.json):" -ForegroundColor White
-    Write-Host @"
+    Write-Host "  Install matlabengine (version must match your MATLAB release):" -ForegroundColor White
+    Write-Host "       pip install matlabengine==25.2   # R2025b" -ForegroundColor DarkGray
+    Write-Host "       pip install matlabengine==24.2   # R2024b" -ForegroundColor DarkGray
+    Write-Host ""
+    Write-Host "  Add to Claude Desktop config (~\AppData\Roaming\Claude\claude_desktop_config.json):" -ForegroundColor White
+    Write-Host @'
   {
     "mcpServers": {
       "simulink-tools": {
-        "command": "$pythonExe",
-        "args": ["$($serverPy.Replace('\','\\'))"],
+        "command": "simulink-mcp",
         "env": {
-          "PYTHONPATH": "$($REPO_ROOT.Replace('\','\\'))",
           "SLX_WORKSPACE": "C:\\path\\to\\your\\models"
         }
       }
     }
   }
-"@ -ForegroundColor DarkGray
+'@ -ForegroundColor DarkGray
     Write-Host ""
-    Write-Host "  3. Restart Claude Desktop." -ForegroundColor White
+    Write-Host "  Restart Claude Desktop." -ForegroundColor White
     Write-Host ""
-    Write-Host "  Note: matlabengine version must match your MATLAB release." -ForegroundColor DarkGray
-    Write-Host "        E.g. for MATLAB R2025b: pip install matlabengine==25.2" -ForegroundColor DarkGray
+    Write-Host "  Note: SLX_WORKSPACE is optional — defaults to current directory." -ForegroundColor DarkGray
+    Write-Host "        SLX_HELPERS_PATH is optional — defaults to the bundled matlab/ scripts." -ForegroundColor DarkGray
 }
 
 Write-Host ""
