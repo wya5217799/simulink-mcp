@@ -3,11 +3,11 @@
 # Works on Windows (PowerShell 5.1+). Run from the repo root.
 #
 # What it does:
-#   1. Copies the skill to ~\.shared-skills\simulink-toolbox
-#   2. Creates junction links for Claude (~\.claude\skills\) and Codex (~\.codex\skills\)
-#   3. Patches ~\.claude\settings.json with the two hook entries
-#   4. Patches ~\.codex\hooks.json with the two hook entries
-#   5. Shows MCP server config snippet to paste into Claude Desktop
+#   1. Creates junction links for Claude and Codex pointing DIRECTLY to skill/
+#      in this repo — no intermediate copy. Edit skill/ here and it's live instantly.
+#   2. Patches ~\.claude\settings.json with the two hook entries
+#   3. Patches ~\.codex\hooks.json with the two hook entries
+#   4. Runs pip install -e to register the simulink-mcp CLI globally
 #
 # Usage:
 #   .\install.ps1                        # interactive — prompts for Python path
@@ -23,8 +23,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $REPO_ROOT  = $PSScriptRoot
-$SKILL_SRC  = Join-Path $REPO_ROOT "skill"
-$SHARED     = Join-Path $env:USERPROFILE ".shared-skills\simulink-toolbox"
+$SKILL_SRC  = Join-Path $REPO_ROOT "skill"   # junction target — repo itself
 $CLAUDE_SKL = Join-Path $env:USERPROFILE ".claude\skills\simulink-toolbox"
 $CODEX_SKL  = Join-Path $env:USERPROFILE ".codex\skills\simulink-toolbox"
 $CLAUDE_CFG = Join-Path $env:USERPROFILE ".claude\settings.json"
@@ -34,42 +33,33 @@ function Write-Step { param([string]$msg) Write-Host "  > $msg" -ForegroundColor
 function Write-Ok   { param([string]$msg) Write-Host "  [OK] $msg" -ForegroundColor Green }
 function Write-Warn { param([string]$msg) Write-Host "  [WARN] $msg" -ForegroundColor Yellow }
 
-# ---------------------------------------------------------------------------
-# 1. Install shared skill
-# ---------------------------------------------------------------------------
 Write-Host ""
 Write-Host "=== simulink-mcp installer ===" -ForegroundColor Magenta
-
-Write-Step "Installing skill to $SHARED"
-if (Test-Path $SHARED) {
-    Remove-Item $SHARED -Recurse -Force
-}
-Copy-Item $SKILL_SRC $SHARED -Recurse
-Write-Ok "Skill copied"
+Write-Host "  Repo: $REPO_ROOT" -ForegroundColor DarkGray
 
 # ---------------------------------------------------------------------------
-# 2. Junction links for Claude Code
+# 1. Junction links for Claude Code  → repo/skill/ directly
 # ---------------------------------------------------------------------------
-Write-Step "Creating Claude skill junction: $CLAUDE_SKL"
+Write-Step "Creating Claude skill junction: $CLAUDE_SKL -> $SKILL_SRC"
 $claudeSkillDir = Split-Path $CLAUDE_SKL -Parent
 if (-not (Test-Path $claudeSkillDir)) {
     New-Item -ItemType Directory -Force $claudeSkillDir | Out-Null
 }
 if (Test-Path $CLAUDE_SKL) { Remove-Item $CLAUDE_SKL -Recurse -Force }
-cmd /c "mklink /J `"$CLAUDE_SKL`" `"$SHARED`"" | Out-Null
-Write-Ok "Claude junction created"
+cmd /c "mklink /J `"$CLAUDE_SKL`" `"$SKILL_SRC`"" | Out-Null
+Write-Ok "Claude junction created (edits to skill/ are live immediately)"
 
 # ---------------------------------------------------------------------------
-# 3. Junction links for Codex
+# 2. Junction links for Codex  → repo/skill/ directly
 # ---------------------------------------------------------------------------
-Write-Step "Creating Codex skill junction: $CODEX_SKL"
+Write-Step "Creating Codex skill junction: $CODEX_SKL -> $SKILL_SRC"
 $codexSkillDir = Split-Path $CODEX_SKL -Parent
 if (-not (Test-Path $codexSkillDir)) {
     New-Item -ItemType Directory -Force $codexSkillDir | Out-Null
 }
 if (Test-Path $CODEX_SKL) { Remove-Item $CODEX_SKL -Recurse -Force }
-cmd /c "mklink /J `"$CODEX_SKL`" `"$SHARED`"" | Out-Null
-Write-Ok "Codex junction created"
+cmd /c "mklink /J `"$CODEX_SKL`" `"$SKILL_SRC`"" | Out-Null
+Write-Ok "Codex junction created (edits to skill/ are live immediately)"
 
 # ---------------------------------------------------------------------------
 # Helper: read JSON (handles comments / trailing commas via regex strip)
@@ -233,6 +223,9 @@ if (-not $SkillOnly) {
 
 Write-Host ""
 Write-Host "=== Installation complete ===" -ForegroundColor Green
-Write-Host "  Skill location : $SHARED" -ForegroundColor White
+Write-Host "  Skill source   : $SKILL_SRC" -ForegroundColor White
 Write-Host "  Claude junction: $CLAUDE_SKL" -ForegroundColor White
 Write-Host "  Codex junction : $CODEX_SKL" -ForegroundColor White
+Write-Host ""
+Write-Host "  Edit files in $SKILL_SRC" -ForegroundColor DarkGray
+Write-Host "  Changes are live immediately — no reinstall needed." -ForegroundColor DarkGray
